@@ -12,8 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import butterknife.ButterKnife;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
@@ -35,14 +34,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-
-
-
-
+       // Criteria criteria = new Criteria();
+       // String bestProvider = locationManager.getBestProvider(criteria, true);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, 5, MainActivity.this);
 
     }
 
     private void notificationshow() {
+
 
         if(latitude == 30.8597753 && longitude == 75.8607141){
             builder = new NotificationCompat.Builder(this);
@@ -80,16 +89,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
 
-        Criteria criteria = new Criteria();
-        String bestProvider = locationManager.getBestProvider(criteria, true);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-
-
-            return;
-        }
-        location = locationManager.getLastKnownLocation(bestProvider);
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         notificationshow();
